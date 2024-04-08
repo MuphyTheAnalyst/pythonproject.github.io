@@ -21,6 +21,17 @@ def authenticate_user(username, pin, users):
         return user
     return None
 
+# Add a new user to the JSON file
+def add_user(username, pin, users):
+    if username in users:
+        return False  # User already exists
+    users[username] = {
+        "pin": pin,
+        "balance": 0.0
+    }
+    save_users(users)
+    return True
+
 def main():
     print("Welcome to the ATM Simulator")
     users = load_users()
@@ -40,8 +51,9 @@ def main():
                 print("2. Withdraw")
                 print("3. Deposit")
                 print("4. Change PIN")
-                print("5. Exit")
-                choice = input("Enter your choice (1/2/3/4/5): ")
+                print("5. Add New User")
+                print("6. Exit")
+                choice = input("Enter your choice (1/2/3/4/5/6): ")
 
                 if choice == "1":
                     print(f"Account Balance: ${user['balance']:.2f}")
@@ -70,11 +82,20 @@ def main():
                     else:
                         print("Invalid PIN format (4 characters required).")
                 elif choice == "5":
+                    new_username = input("Enter the new username: ")
+                    new_pin = input("Enter the new PIN (4 characters): ")
+                    if len(new_pin) == 4:
+                        if add_user(new_username, new_pin, users):
+                            print("User added successfully.")
+                        else:
+                            print("Username already exists.")
+                    else:
+                        print("Invalid PIN format (4 characters required).")
+                elif choice == "6":
                     print("Thank you for using ATM Simulator. Goodbye!")
                     return
                 else:
                     print("Invalid choice. Please choose again.")
-
         else:
             attempts -= 1
             if attempts > 0:
